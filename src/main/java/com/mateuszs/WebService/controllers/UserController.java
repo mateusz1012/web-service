@@ -1,6 +1,7 @@
 package com.mateuszs.WebService.controllers;
 
 import com.mateuszs.WebService.dto.UserDTO;
+import com.mateuszs.WebService.model.User;
 import com.mateuszs.WebService.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -47,12 +49,27 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
+    @GetMapping(value = "/user/lastName/{lastName}")
+    public ResponseEntity<List<UserDTO>> getUserByLastName(@PathVariable String lastName) {
+
+        List<UserDTO> userDTOList = userService.getUsersByLastName(lastName);
+        return ResponseEntity.ok(userDTOList);
+    }
+
+    @GetMapping(value = "/user/country/{country}")
+    public ResponseEntity<List<UserDTO>> getUserByCountry(@PathVariable String country) {
+
+        List<UserDTO> userDTOList = userService.getUsersByCountry(country);
+        return ResponseEntity.ok(userDTOList);
+    }
+
     @DeleteMapping(path = "/user/delete/{id}")
     public void deleteUserById(@PathVariable Long id) {
 
         userService.deleteUserById(id);
     }
 
+    /*
     @PostMapping("/user")
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
         UserDTO savedUser = userService.save(userDTO);
@@ -62,5 +79,12 @@ public class UserController {
 
         return ResponseEntity.created(location).build();
 
+    }
+     */
+
+    @PostMapping(value = "/user")
+    public List<UserDTO> createOrSaveUser(@RequestBody UserDTO userDTO) {
+
+       return userService.save(userDTO.getId());
     }
 }

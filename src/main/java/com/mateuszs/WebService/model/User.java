@@ -27,9 +27,9 @@ public class User {
     public UserDTO dto() {
 
         return UserDTO.builder()
+                .id(this.id)
                 .firstName(this.firstName)
                 .lastName(this.lastName)
-                .id(this.id)
                 .country(this.country)
                 .phoneNumber(this.phoneNumber).build();
     }

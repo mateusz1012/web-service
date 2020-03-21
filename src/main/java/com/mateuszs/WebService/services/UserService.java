@@ -34,6 +34,24 @@ public class UserService {
         return userDTO;
     }
 
+    public List<UserDTO> getUsersByLastName(String lastName) {
+        List<User> users = userRepository.findAllByLastName(lastName);
+        List<UserDTO> userDTOList = new ArrayList<>();
+        for (User user : users) {
+            userDTOList.add(user.dto());
+        }
+        return userDTOList;
+    }
+
+    public List<UserDTO> getUsersByCountry(String country) {
+        List<User> users = userRepository.findAllByCountry(country);
+        List<UserDTO> userDTOList = new ArrayList<>();
+        for (User user : users) {
+            userDTOList.add(user.dto());
+        }
+        return userDTOList;
+    }
+
     @Transactional //musi być
     public UserDTO deleteUserById(Long id) {
         Optional<User> user = userRepository.deleteUserById(id);
@@ -43,8 +61,12 @@ public class UserService {
         return null;
     }
 
-
-    public UserDTO save(UserDTO userDTO) {
-        return userDTO;
+    public List<UserDTO> save(Long id) {
+        List<User> users = userRepository.findAllById(id);
+        List<UserDTO> userDTOSave = new ArrayList<>();
+        for (User user : users) {
+            userDTOSave.add(user.dto());
+        }
+        return userDTOSave;
     }
 }
