@@ -3,6 +3,7 @@ package com.mateuszs.WebService.services;
 import com.mateuszs.WebService.dto.UserDTO;
 import com.mateuszs.WebService.jpa.services.UserRepository;
 import com.mateuszs.WebService.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ConverterService converterService; //wstrzykiwanie przez pole
 
     public UserDTO getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
@@ -61,12 +65,10 @@ public class UserService {
         return null;
     }
 
-    public List<UserDTO> save(Long id) {
-        List<User> users = userRepository.findAllById(id);
-        List<UserDTO> userDTOSave = new ArrayList<>();
-        for (User user : users) {
-            userDTOSave.add(user.dto());
-        }
-        return userDTOSave;
+    @Transactional
+    public UserDTO saveUser(UserDTO userDTO) {
+        User user = converterService.convertUserDTOToUser(userDTO);
+        User userToReturn = userRepository.save(user);
+        return userToReturn.dto();
     }
 }

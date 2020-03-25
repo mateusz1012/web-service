@@ -1,16 +1,12 @@
 package com.mateuszs.WebService.controllers;
 
 import com.mateuszs.WebService.dto.UserDTO;
-import com.mateuszs.WebService.model.User;
 import com.mateuszs.WebService.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
-import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -63,28 +59,15 @@ public class UserController {
         return ResponseEntity.ok(userDTOList);
     }
 
-    @DeleteMapping(path = "/user/delete/{id}")
+    @DeleteMapping(value = "/user/delete/{id}")
     public void deleteUserById(@PathVariable Long id) {
 
         userService.deleteUserById(id);
     }
-
-    /*
-    @PostMapping("/user")
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-        UserDTO savedUser = userService.save(userDTO);
-
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(savedUser.getId()).toUri();
-
-        return ResponseEntity.created(location).build();
-
-    }
-     */
-
+    
     @PostMapping(value = "/user")
-    public List<UserDTO> createOrSaveUser(@RequestBody UserDTO userDTO) {
-
-       return userService.save(userDTO.getId());
+    public ResponseEntity<UserDTO> save(@RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok(userService.saveUser(userDTO));
     }
+
 }
