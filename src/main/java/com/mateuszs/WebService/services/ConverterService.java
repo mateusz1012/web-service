@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ConverterService {
-    //konwerter UserDTO na User
 
+    //konwerter User na UserDTO
     public UserDTO convertUserToUserDTO(User user) {
 
         return UserDTO.builder()
@@ -18,6 +18,7 @@ public class ConverterService {
                 .phoneNumber(user.getPhoneNumber()).build();
     }
 
+    //konwerterUserDTO na User
     public User convertUserDTOToUser(UserDTO userDTO) {
 
         return User.builder()

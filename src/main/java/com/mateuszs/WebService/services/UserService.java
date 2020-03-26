@@ -29,6 +29,10 @@ public class UserService {
         return null;
     }
 
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
     public List<UserDTO> getUsersByFirstName(String firstName) {
         List<User> users = userRepository.findAllByFirstName(firstName);
         List<UserDTO> userDTO = new ArrayList<>();
@@ -56,13 +60,13 @@ public class UserService {
         return userDTOList;
     }
 
-    @Transactional //musi być
-    public UserDTO deleteUserById(Long id) {
-        Optional<User> user = userRepository.deleteUserById(id);
-        if (user.isPresent()) {
-            return user.get().dto();
-        }
-        return null;
+    @Transactional
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
     }
 
     @Transactional

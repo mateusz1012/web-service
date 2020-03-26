@@ -1,12 +1,14 @@
 package com.mateuszs.WebService.controllers;
 
 import com.mateuszs.WebService.dto.UserDTO;
+import com.mateuszs.WebService.model.User;
 import com.mateuszs.WebService.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -14,7 +16,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
 
     @GetMapping(path = "/user/first")
     public ResponseEntity<UserDTO> getFirstUser() {
@@ -29,6 +30,11 @@ public class UserController {
         UserDTO userDTO = userService.getUserById(1L);
         return ResponseEntity.ok(userDTO);
 
+    }
+
+    @GetMapping(path = "/user")
+    public ResponseEntity<List<User>> findAll() {
+        return ResponseEntity.ok(userService.findAll());
     }
 
     @GetMapping(path = "/user/id/{id}")
@@ -59,15 +65,42 @@ public class UserController {
         return ResponseEntity.ok(userDTOList);
     }
 
-    @DeleteMapping(value = "/user/delete/{id}")
-    public void deleteUserById(@PathVariable Long id) {
+    @DeleteMapping("/user/delete/{id}")
+    public ResponseEntity<UserDTO> delete(@PathVariable Long id) {
+        if (userService.findById(id).isPresent()) {
+            ResponseEntity.badRequest().build();
+        }
+        userService.deleteById(id);
 
-        userService.deleteUserById(id);
+        return ResponseEntity.ok().build();
     }
-    
+
     @PostMapping(value = "/user")
     public ResponseEntity<UserDTO> save(@RequestBody UserDTO userDTO) {
         return ResponseEntity.ok(userService.saveUser(userDTO));
     }
 
+//    @PutMapping("/user/{id}")
+//    public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+//        if (userService.findById(id).isPresent()) {
+//            ResponseEntity.badRequest().build();
+//        }
+//        return ResponseEntity.ok(userService.saveUser(userDTO));
+//    }
+
+    @PutMapping("/user/{id}")
+    public UserDTO update(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        return userService.findById(id)
+                .map(user -> {
+                    user.setFirstName(userDTO.getFirstName());
+                    user.setLastName(userDTO.getLastName());
+                    user.setCountry(userDTO.getCountry());
+                    user.setPhoneNumber(userDTO.getPhoneNumber());
+                    return userService.saveUser(userDTO);
+                })
+                .orElseGet(() -> {
+                    userDTO.setId(id);
+                    return userService.saveUser(userDTO);
+                });
+    }
 }
