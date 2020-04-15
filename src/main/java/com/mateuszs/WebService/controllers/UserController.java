@@ -80,14 +80,6 @@ public class UserController {
         return ResponseEntity.ok(userService.saveUser(userDTO));
     }
 
-//    @PutMapping("/user/{id}")
-//    public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO userDTO) {
-//        if (userService.findById(id).isPresent()) {
-//            ResponseEntity.badRequest().build();
-//        }
-//        return ResponseEntity.ok(userService.saveUser(userDTO));
-//    }
-
     @PutMapping("/user/{id}")
     public UserDTO update(@PathVariable Long id, @RequestBody UserDTO userDTO) {
         return userService.findById(id)
@@ -96,7 +88,7 @@ public class UserController {
                     user.setLastName(userDTO.getLastName());
                     user.setCountry(userDTO.getCountry());
                     user.setPhoneNumber(userDTO.getPhoneNumber());
-                    return userService.saveUser(userDTO);
+                    return userService.saveUser(user.dto());
                 })
                 .orElseGet(() -> {
                     userDTO.setId(id);
